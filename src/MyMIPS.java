@@ -116,31 +116,6 @@ public class MyMIPS implements MIPS {
 		return result;
 	}
 	
-	/*
-	public static String binarioUnsigned (String value, int size) {
-		// Mesmo código da função adduAuxiliar que pedro fez, só deixei o nome de uma forma mais genérica
-		//  pra evitar repetição de codigo
-		if (value == null) {
-			value = "";
-		}
-		
-		String rg = value;
-			
-			if ((rg.charAt(0)) == '1') { //completar 32 bits
-				while ( rg.length() < size ) {
-					rg = '1' + rg;
-				}
-			} else {
-				while ( rg.length() < size ) {
-					rg = '0' + rg;
-				}
-			}
-			
-		return rg;
-	}
-	*/
-	
-	
 	public static String andAuxiliar(String rgRS, String rgRT, int size) {
 		if (rgRS == null) {
 			rgRS = "";
@@ -255,131 +230,6 @@ public class MyMIPS implements MIPS {
 		
 		return resultadoFinal;
 	}
-	
-	/*
-	public static String sltAuxiliar(String value, int size) {
-		if (value == null) {
-			value = "";
-		}
-		
-		String result = value;
-		
-		if ((result.charAt(0)) == '1') {
-			  while ( result.length() < size ) {
-				result = '1' + result;
-			}
-			
-			String novoResult = "";
-			  
-			for (int i = 31; i >= 0; i--) { //Complemento a 1
-				if (result.charAt(i) == '1') {
-					novoResult = '0' +  novoResult;
-				} else {
-					novoResult = '1' +  novoResult;
-				}
-			}
-			
-			String novoResultFinal = "";
-			boolean carryIn = true;
-			for (int i = 31; i >= 0; i--) { //Complemento a 2
-				if (novoResult.charAt(i) == '1' && carryIn == true) {
-					novoResultFinal = '0' + novoResultFinal;
-					carryIn = true;
-				} else if (carryIn == true){
-					novoResultFinal = '1' + novoResultFinal;
-					carryIn = false;
-				} else {
-					novoResultFinal = novoResult.charAt(i) + novoResultFinal;
-				}
-			}
-			
-			result = novoResultFinal;
-			
-			result = '-' + result;
-			
-		} else {
-			while ( result.length() < size ) {
-				result = '0' + result;
-			}
-		}
-		
-		return result;
-		
-	}
-	*/
-	
-	/*
-	public static String sltuAuxiliar(String value, int size) {
-		if (value == null) {
-			value = "";
-		}
-		
-		String valorRS = value;
-		
-			if ((valorRS.charAt(0)) == '1') { //completar 32 bits
-				while ( valorRS.length() < size ) {
-					valorRS = '1' + valorRS;
-				}
-			} else {
-				while ( valorRS.length() < size ) {
-					valorRS = '0' + valorRS;
-				}
-			}
-			
-		return valorRS;
-	}
-	*/
-	
-	/*
-	public static String sllAuxiliar(String value, int size) {
-		if (value == null) {
-			value = "";
-		}
-		
-		String result = value;
-		
-		if ((result.charAt(0)) == '1') {
-			  while ( result.length() < size ) {
-				result = '1' + result;
-			}
-			
-			String novoResult = "";
-			  
-			for (int i = 31; i >= 0; i--) { //Complemento a 1
-				if (result.charAt(i) == '1') {
-					novoResult = '0' +  novoResult;
-				} else {
-					novoResult = '1' +  novoResult;
-				}
-			}
-			
-			String novoResultFinal = "";
-			boolean carryIn = true;
-			for (int i = 31; i >= 0; i--) { //Complemento a 2
-				if (novoResult.charAt(i) == '1' && carryIn == true) {
-					novoResultFinal = '0' + novoResultFinal;
-					carryIn = true;
-				} else if (carryIn == true){
-					novoResultFinal = '1' + novoResultFinal;
-					carryIn = false;
-				} else {
-					novoResultFinal = novoResult.charAt(i) + novoResultFinal;
-				}
-			}
-			
-			result = novoResultFinal;
-			
-			result = '-' + result;
-			
-		} else {
-			while ( result.length() < size ) {
-				result = '0' + result;
-			}
-		}
-		
-		return result;
-	}
-	*/
 	
 	public static void InstTipoR (String instrucaoAtual, State state) {
 		
@@ -504,10 +354,8 @@ public class MyMIPS implements MIPS {
 		Integer valorRS = state.readRegister(rs);
 		Integer valorRT = state.readRegister(rt);
 		Integer result = 0;
-		String singExtImm = "";
 		String subStringRT = "";
 		String StringRT = "";
-		Integer valorSingExtImm = 0;
 		Integer dadoMemoria = 0;
 		String opcode = instrucaoAtual.substring(0, 6);
 		String texto = "";
@@ -521,89 +369,66 @@ public class MyMIPS implements MIPS {
 					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
 				}
 				
-				texto = instrucaoAtual.substring(6, 11);
-				if((texto.charAt(0)) == '1') {
-					valorRS = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(6, 11), '1', 32), 32), 2);
-				}else {
-					valorRS = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(6, 11), 32), 2);
-				}
-				
-				//constantOrAddress = Integer.parseInt(BinarioComSinal(Integer.toBinaryString(constantOrAddress), 32), 2);
-				//valorRS = Integer.parseInt(BinarioComSinal(Integer.toBinaryString(valorRS), 32), 2);
 				result = valorRS + constantOrAddress;
 				state.writeRegister(rt, result);
 			break;
 			
 			case "001001": //FUNÇÂO ADDIU
-				constantOrAddress = Integer.parseInt((completeToLeft(Integer.toBinaryString(constantOrAddress), '0', 32)), 2);
-				valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+				}else {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+				}				
 				
 				result = valorRS + constantOrAddress;
 				state.writeRegister(rt, result);
 			break;
 			
-			case "001100": //FUNÇÃO ANDI
-				//o rs pode ser negativo por isso esses ifs.
-				
-				if((Integer.toBinaryString(valorRS).charAt(0)) == '1') {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '1', 32), 2);
+			case "001100": //FUNÇÃO ANDI								
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
 				}else {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
 				}
-				//Como a função ANDI ela estende o imediato com zeros, eu imagino que não seja necessário nenhum if.
-				constantOrAddress = Integer.parseInt((completeToLeft(Integer.toBinaryString(constantOrAddress), '0', 32)), 2);
 				
 				result = valorRS & constantOrAddress;
 				state.writeRegister(rt, result);
 			break;
 				
 			case "001101": // FUNÇÃO ORI
-				//o rs pode ser negativo por isso esses ifs.
-				
-				if((Integer.toBinaryString(valorRS).charAt(0)) == '1') {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '1', 32), 2);
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
 				}else {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
 				}
-				//Como a função ORI ela estende o imediato com zeros, eu imagino que não seja necessário nenhum if.
-				constantOrAddress = Integer.parseInt((completeToLeft(Integer.toBinaryString(constantOrAddress), '0', 32)), 2);
 				
 				result = valorRS | constantOrAddress;
 				state.writeRegister(rt, result);
 			break;
 				
 			case "000100": //FUNÇÃO BEQ
-				
-				char aux = Integer.toBinaryString(constantOrAddress).charAt(0);
-				String bitZeros = "00";
-				String auxConstant = "";
-				String fim = "";
-				short cont = 14;
-				
-				
-				if((Integer.toBinaryString(valorRS).charAt(0)) == '1') {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '1', 32), 2);
-				}else {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
-				}
-				
-				if((Integer.toBinaryString(valorRT).charAt(0)) == '1') {
-					valorRT = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRT), '1', 32), 2);
-				}else {
-					valorRT = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRT), '0', 32), 2);
-				}
-				
-				
-				while(cont > 0) {
-					auxConstant += aux;
-					cont--;
-				}
-				
-				fim = auxConstant+constantOrAddress+bitZeros;
-				constantOrAddress = Integer.parseInt((completeToLeft(fim, fim.charAt(0), 32)), 2);
-				result = state.getPC()+constantOrAddress+4;
-				
 				if(valorRT == valorRS) {
+					char aux = instrucaoAtual.substring(16, 32).charAt(0);
+					String bitZeros = "00";
+					String auxConstant = "";
+					String fim = "";
+					short cont = 14;
+					
+					while(cont > 0) {
+						auxConstant += aux;
+						cont--;
+					}
+					
+					String constantOrAddressText = instrucaoAtual.substring(16, 32);
+					
+					fim = auxConstant + constantOrAddressText + bitZeros;
+					
+					constantOrAddress = Integer.parseInt(BinarioComSinal(fim, 32), 2);
+					result = state.getPC() + constantOrAddress + 4;
+					
 					state.setPC(result);
 					PC4 = false;
 				}
@@ -611,36 +436,25 @@ public class MyMIPS implements MIPS {
 			break;
 			
 			case "000101": //FUNÇÃO BNE
-				char aux2 = Integer.toBinaryString(constantOrAddress).charAt(0);
-				String bitZeros2 = "00";
-				String auxConstant2 = "";
-				String fim2 = "";
-				short cont2 = 14;
-				
-				
-				if((Integer.toBinaryString(valorRS).charAt(0)) == '1') {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '1', 32), 2);
-				}else {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
-				}
-				
-				if((Integer.toBinaryString(valorRT).charAt(0)) == '1') {
-					valorRT = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRT), '1', 32), 2);
-				}else {
-					valorRT = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRT), '0', 32), 2);
-				}
-				
-				
-				while(cont2 > 0) {
-					auxConstant2 += aux2;
-					cont2--;
-				}
-				
-				fim = auxConstant2+constantOrAddress+bitZeros2;
-				constantOrAddress = Integer.parseInt((completeToLeft(fim2, fim2.charAt(0), 32)), 2);
-				result = state.getPC()+constantOrAddress+4;
-				
 				if(valorRT != valorRS) {
+					char aux = instrucaoAtual.substring(16, 32).charAt(0);
+					String bitZeros = "00";
+					String auxConstant = "";
+					String fim = "";
+					short cont = 14;
+					
+					while(cont > 0) {
+						auxConstant += aux;
+						cont--;
+					}
+					
+					String constantOrAddressText = instrucaoAtual.substring(16, 32);
+					
+					fim = auxConstant + constantOrAddressText + bitZeros;
+					
+					constantOrAddress = Integer.parseInt(BinarioComSinal(fim, 32), 2);
+					result = state.getPC() + constantOrAddress + 4;
+					
 					state.setPC(result);
 					PC4 = false;
 				}
@@ -649,17 +463,12 @@ public class MyMIPS implements MIPS {
 			case "001010": //FUNÇÃO STLI
 				result = 0;
 				
-				if(Integer.toBinaryString(constantOrAddress).charAt(0) == '1') {
-					constantOrAddress = Integer.parseInt((completeToLeft(Integer.toBinaryString(constantOrAddress), '1', 32)), 2);
-				} else {
-					constantOrAddress = Integer.parseInt((completeToLeft(Integer.toBinaryString(constantOrAddress), '0', 32)), 2);
-				}
-				
-				if((Integer.toBinaryString(valorRS).charAt(0)) == '1') {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '1', 32), 2);
-				} else {
-					valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
-				}
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+				}else {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+				}	
 				
 				if(valorRS < constantOrAddress) {
 					result = 1;
@@ -670,130 +479,148 @@ public class MyMIPS implements MIPS {
 			
 			case "001011": //FUNÇÃO SLTIU
 				result = 0;
-				constantOrAddress = Integer.parseInt((completeToLeft(Integer.toBinaryString(constantOrAddress), '0', 32)), 2);
-				valorRS = Integer.parseInt(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
+				
+				texto = instrucaoAtual.substring(16, 32);
+				long constantOrAddressBig = 0;
+				if((texto.charAt(0)) == '1') {
+					constantOrAddressBig = Long.parseLong(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 2);
+				}else {
+					constantOrAddressBig = Long.parseLong(completeToLeft(instrucaoAtual.substring(16, 32), '0', 32), 2);
+				}
 
-				if(valorRS < constantOrAddress) {
+				long valorRSBig = Long.parseLong(completeToLeft(Integer.toBinaryString(valorRS), '0', 32), 2);
+				
+				if(valorRSBig < constantOrAddressBig) {
 					result = 1;
 				}
 				
 				state.writeRegister(rt, result);
-				
 			break;
 
-			case "100100": // FUNÇÃO LBU
-				singExtImm = instrucaoAtual.substring(16,32);
-					if (singExtImm.charAt(0) == '1') {
-						singExtImm = completeToLeft(singExtImm, '1', 32);
-					} else {
-						singExtImm = completeToLeft(singExtImm, '0', 32);
-					}
+			case "100100": // FUNÇÃO LBU 					
+					texto = instrucaoAtual.substring(16, 32);
+					if((texto.charAt(0)) == '1') {
+						constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+					}else {
+						constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+					}	
 					
-					valorSingExtImm = Integer.parseInt(singExtImm, 2);
+					dadoMemoria = state.readWordDataMemory(valorRS + constantOrAddress);
 					
-					dadoMemoria = state.readWordDataMemory(valorRS + valorSingExtImm);
+					if(dadoMemoria < 0) {
+						texto = completeToLeft(Integer.toBinaryString(dadoMemoria), '1', 32);
+					}else {
+						texto = completeToLeft(Integer.toBinaryString(dadoMemoria), '0', 32);
+					}	
 					
-					Integer byteRT = Integer.parseInt(completeToLeft((Integer.toBinaryString(dadoMemoria)).substring(24, 32), '0', 32), 2);
+					Integer byteRT = Integer.parseInt(completeToLeft((texto).substring(24, 32), '0', 32), 2);
 					
 					state.writeRegister(rt, byteRT);
 				break;
 
 			case "100101": // FUNÇÃO LHU
-				singExtImm = instrucaoAtual.substring(16,32);
-					if (singExtImm.charAt(0) == '1') {
-						singExtImm = completeToLeft(singExtImm, '1', 32);
-					} else {
-						singExtImm = completeToLeft(singExtImm, '0', 32);
-					}
+					texto = instrucaoAtual.substring(16, 32);
+					if((texto.charAt(0)) == '1') {
+						constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+					}else {
+						constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+					}	
 					
-					valorSingExtImm = Integer.parseInt(singExtImm, 2);
+					dadoMemoria = state.readWordDataMemory(valorRS + constantOrAddress);
 					
-					dadoMemoria = state.readWordDataMemory(valorRS + valorSingExtImm);
+					if(dadoMemoria < 0) {
+						texto = completeToLeft(Integer.toBinaryString(dadoMemoria), '1', 32);
+					}else {
+						texto = completeToLeft(Integer.toBinaryString(dadoMemoria), '0', 32);
+					}	
 					
-					Integer halfRT = Integer.parseInt(completeToLeft((Integer.toBinaryString(dadoMemoria)).substring(16, 32), '0', 32), 2);
-					
+					Integer halfRT = Integer.parseInt(completeToLeft((texto).substring(16, 32), '0', 32), 2);
+	
 					state.writeRegister(rt, halfRT);
 				break;
 				
-			case "001111": //FUNÇÃO LUI
+			case "001111": //FUNÇÃO LUI 
 					String adress = instrucaoAtual.substring(16, 32);
-					valorRT = Integer.parseInt((adress + "0000000000000000"), 2); // 16 0's
+					valorRT = Integer.parseInt(BinarioComSinal((adress + "0000000000000000"), 32), 2); // 16 0's
 					
 					state.writeRegister(rt, valorRT);
 				break;
 				
 			case "100011": //FUNÇÃO LW
-				singExtImm = instrucaoAtual.substring(16,32);
-				if (singExtImm.charAt(0) == '1') {
-					singExtImm = completeToLeft(singExtImm, '1', 32);
-				} else {
-					singExtImm = completeToLeft(singExtImm, '0', 32);
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+				}else {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
 				}
 				
-				valorSingExtImm = Integer.parseInt(singExtImm, 2);
-				
-				dadoMemoria = state.readWordDataMemory(valorRS + valorSingExtImm);
+				dadoMemoria = state.readWordDataMemory(valorRS + constantOrAddress);
 
 				state.writeRegister(rt, dadoMemoria);
 				
 				break;
 				
 			case "101000": //FUNÇÃO SB
-				singExtImm = instrucaoAtual.substring(16,32);
-				if (singExtImm.charAt(0) == '1') {
-					singExtImm = completeToLeft(singExtImm, '1', 32);
-				} else {
-					singExtImm = completeToLeft(singExtImm, '0', 32);
-				}
-				
-				valorSingExtImm = Integer.parseInt(singExtImm, 2);
-				
-				subStringRT = (Integer.toBinaryString(state.readRegister(rt))).substring(24, 32);
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+				}else {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+				}	
+		
+				subStringRT = completeToLeft(Integer.toBinaryString(state.readRegister(rt)), '0', 32).substring(24, 32);
 
-				Integer dadoByteMemoria = state.readWordDataMemory(valorRS + valorSingExtImm);
+				Integer dadoByteMemoria = state.readWordDataMemory(valorRS + constantOrAddress);
 				
-				StringRT = ((Integer.toBinaryString(dadoByteMemoria)).substring(0, 24)) + subStringRT;
+				if(dadoByteMemoria < 0) {
+					texto = completeToLeft(Integer.toBinaryString(dadoByteMemoria), '1', 32);
+				}else {
+					texto = completeToLeft(Integer.toBinaryString(dadoByteMemoria), '0', 32);
+				}	
 				
-				valorRT = Integer.parseInt(StringRT, 2);
+				StringRT = (texto).substring(0, 24) + subStringRT;
 				
-				state.writeWordDataMemory((valorRS + valorSingExtImm), valorRT);
+				valorRT = Integer.parseInt(BinarioComSinal(StringRT, 32), 2);
+				
+				state.writeWordDataMemory((valorRS + constantOrAddress), valorRT);
 				
 				break;
 				
 			case "101001": //FUNÇÃO SH
-				singExtImm = instrucaoAtual.substring(16,32);
-				if (singExtImm.charAt(0) == '1') {
-					singExtImm = completeToLeft(singExtImm, '1', 32);
-				} else {
-					singExtImm = completeToLeft(singExtImm, '0', 32);
-				}
-				
-				valorSingExtImm = Integer.parseInt(singExtImm, 2);
-				
-				subStringRT = (Integer.toBinaryString(state.readRegister(rt))).substring(16, 32);
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+				}else {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+				}	
+		
+				subStringRT = completeToLeft(Integer.toBinaryString(state.readRegister(rt)), '0', 32).substring(16, 32);
 
-				Integer dadoHalfMemoria = state.readWordDataMemory(valorRS + valorSingExtImm);
+				Integer dadoHalfMemoria = state.readWordDataMemory(valorRS + constantOrAddress);
 				
-				StringRT = ((Integer.toBinaryString(dadoHalfMemoria)).substring(0, 16)) + subStringRT;
+				if(dadoHalfMemoria < 0) {
+					texto = completeToLeft(Integer.toBinaryString(dadoHalfMemoria), '1', 32);
+				}else {
+					texto = completeToLeft(Integer.toBinaryString(dadoHalfMemoria), '0', 32);
+				}	
 				
-				valorRT = Integer.parseInt(StringRT, 2);
+				StringRT = (texto).substring(0, 16) + subStringRT;
 				
-				state.writeWordDataMemory((valorRS + valorSingExtImm), valorRT);
+				valorRT = Integer.parseInt(BinarioComSinal(StringRT, 32), 2);
+				
+				state.writeWordDataMemory((valorRS + constantOrAddress), valorRT);
 				
 				break;
 				
 			case "101011": //FUNÇÃO SW
-				singExtImm = instrucaoAtual.substring(16,32);
-				if (singExtImm.charAt(0) == '1') {
-					singExtImm = completeToLeft(singExtImm, '1', 32);
-				} else {
-					singExtImm = completeToLeft(singExtImm, '0', 32);
-				}
-				
-				valorSingExtImm = Integer.parseInt(singExtImm, 2);
-				
-				state.writeWordDataMemory((valorRS + valorSingExtImm), state.readRegister(rt));
-				
+				texto = instrucaoAtual.substring(16, 32);
+				if((texto.charAt(0)) == '1') {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(completeToLeft(instrucaoAtual.substring(16, 32), '1', 32), 32), 2);
+				}else {
+					constantOrAddress = Integer.parseInt(BinarioComSinal(instrucaoAtual.substring(16, 32), 32), 2);
+				}	
+
+				state.writeWordDataMemory((valorRS + constantOrAddress), state.readRegister(rt));
 				break;	
 			
 			default:
@@ -805,17 +632,20 @@ public class MyMIPS implements MIPS {
 		String opcode = instrucaoAtual.substring(0, 6);
 		String adress = instrucaoAtual.substring(6, 32);
 		Integer jumpAddress = 0;
+		String PCcompleto = "";
 		
 		switch (opcode) {
 		case "000010": // FUNÇÃO J
-				jumpAddress = Integer.parseInt((Integer.toString(state.getPC() + 4)).substring(0, 4) + adress + "00");
+				PCcompleto = completeToLeft((Integer.toString(state.getPC() + 4)), '0', 32);
+				jumpAddress = Integer.parseInt(BinarioComSinal((PCcompleto.substring(0, 4) + adress + "00"), 32), 2);
 				state.setPC(jumpAddress);
 				PC4 = false;
 			break;
 				
 		case "000011": // FUNÇÃO JAL
 				state.writeRegister(31, (state.getPC() + 4));
-				jumpAddress = Integer.parseInt((Integer.toString(state.getPC() + 4)).substring(0, 4) + adress + "00");
+				PCcompleto = completeToLeft((Integer.toString(state.getPC() + 4)), '0', 32);
+				jumpAddress = Integer.parseInt(BinarioComSinal((PCcompleto.substring(0, 4) + adress + "00"), 32), 2);
 				state.setPC(jumpAddress);
 				PC4 = false;			
 			break;
